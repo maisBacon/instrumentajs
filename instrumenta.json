@@ -1,0 +1,62 @@
+{
+  "tools": [
+    {
+      "name": "typescript",
+      "category": "superset",
+      "configFileName": "tsconfig.json",
+      "configFileContent": {
+        "compilerOptions": {
+          "target": "ES2020",
+          "module": "commonjs",
+          "allowJs": true,
+          "checkJs": true,
+          "jsx": "preserve",
+          "outDir": "./dist",
+          "rootDir": "./src",
+          "strict": false,
+          "baseUrl": "./src",
+          "esModuleInterop": true,
+          "skipLibCheck": true,
+          "forceConsistentCasingInFileNames": true
+        }
+      }
+    },
+    {
+      "name": "eslint",
+      "category": "linter",
+      "configFileName": ".eslintrc",
+      "configFileContent": {
+        "root": true,
+        "parser": "@typescript-eslint/parser",
+        "extends": [
+          "eslint:recommended",
+          "plugin:@typescript-eslint/recommended",
+          "prettier"
+        ],
+        "plugins": [
+          "@typescript-eslint"
+        ],
+        "rules": {
+          "@typescript-eslint/no-explicit-any": "off",
+          "@typescript-eslint/explicit-module-boundary-types": "off"
+        }
+      },
+      "dependencies": [
+        "@typescript-eslint/eslint-plugin",
+        "@typescript-eslint/parser",
+        "eslint-config-prettier"
+      ]
+    },
+    {
+      "name": "prettier",
+      "category": "formatter",
+      "configFileName": ".prettierrc",
+      "configFileContent": {
+        "arrowParens": "always",
+        "printWidth": 120,
+        "semi": false,
+        "tabWidth": 2
+      }
+    }
+  ]
+}
