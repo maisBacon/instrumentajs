@@ -2,7 +2,7 @@
   "name": "instrumentajs",
   "version": "0.0.1",
   "description": "",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -18,11 +18,14 @@
   },
   "homepage": "https://github.com/dodiego/instrumentajs#readme",
   "devDependencies": {
+    "@types/node": "^16.4.0",
     "@typescript-eslint/eslint-plugin": "^4.28.4",
     "@typescript-eslint/parser": "^4.28.4",
     "eslint": "^7.31.0",
     "eslint-config-prettier": "^8.3.0",
     "prettier": "^2.3.2",
+    "ts-node": "^10.1.0",
+    "tslib": "^1.14.1",
     "typescript": "^4.3.5"
   }
 }
