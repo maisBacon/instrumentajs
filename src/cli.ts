@@ -1,36 +1,8 @@
 import { init, runDev } from "."
-import inquirer from "inquirer"
+import { program } from "commander"
+;(() => {
+  program.command("init").description("Iniciar novo espaço de trabalho").action(init)
+  program.command("dev").description("Iniciar ambiente de desenvolvimento").action(runDev)
 
-async function initialPrompt(): Promise<inquirer.Answers> {
-  return inquirer.prompt([
-    {
-      name: "action",
-      message: "Specify an action",
-      type: "list",
-      choices: ["init", "execute task"],
-    },
-  ])
-}
-
-async function run() {
-  const initialChoice = await initialPrompt()
-  if (initialChoice.action === "init") {
-    await init()
-  } else {
-    const choice = await inquirer.prompt([
-      {
-        name: "task",
-        message: "Specify a task",
-        type: "list",
-        choices: ["run dev"],
-      },
-    ])
-    if (choice.task === "run dev") {
-      runDev()
-    }
-  }
-}
-
-if (!process.argv[2]) {
-  run()
-}
+  program.parse()
+})()

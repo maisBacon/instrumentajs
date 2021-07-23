@@ -6,7 +6,7 @@ export default {
     checkJs: true,
     jsx: "preserve",
     outDir: "./dist",
-    rootDir: "./src",
+    rootDirs: ["./src", "./tools"],
     strict: false,
     baseUrl: "./src",
     esModuleInterop: true,
