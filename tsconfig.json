@@ -12,7 +12,7 @@
       "./tools"
     ],
     "strict": false,
-    "baseUrl": "./src",
+    "baseUrl": ".",
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true

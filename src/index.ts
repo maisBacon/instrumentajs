@@ -1,72 +1,8 @@
-import { promisifyChildProcess, spawnChildProcess } from "adapters/child_process"
-import { assertDirectory, writeJson, writeToolConfig, writeToolIndex } from "adapters/fs"
+import { promisifyChildProcess, spawnChildProcess } from "src/adapters/child_process"
+import { assertDirectory, assertFile, writeJson, writeToolConfig, writeToolIndex } from "src/adapters/fs"
+import defaultConfigs from "src/config"
 import fs from "fs"
 import path from "path"
-const inputDirectory = "./src"
-const outputDirectory = "./dist"
-const toolsDirectory = "./tools"
-const defaultConfigs: Config = {
-  inputDirectory,
-  outputDirectory,
-  tools: [
-    {
-      name: "typescript",
-      category: "superset",
-      dependencies: [],
-      configFileName: "tsconfig.json",
-      configFileContent: {
-        compilerOptions: {
-          resolveJsonModule: true,
-          target: "ES2020",
-          module: "commonjs",
-          allowJs: true,
-          checkJs: true,
-          jsx: "preserve",
-          outDir: outputDirectory,
-          rootDirs: [inputDirectory, toolsDirectory],
-          strict: false,
-          baseUrl: inputDirectory,
-          esModuleInterop: true,
-          skipLibCheck: true,
-          forceConsistentCasingInFileNames: true,
-        },
-      },
-    },
-    {
-      name: "eslint",
-      category: "linter",
-      configFileName: ".eslintrc",
-      configFileContent: {
-        root: true,
-        parser: "@typescript-eslint/parser",
-        extends: ["eslint:recommended", "plugin:@typescript-eslint/recommended", "prettier"],
-        plugins: ["@typescript-eslint"],
-        rules: {
-          "@typescript-eslint/no-explicit-any": "off",
-          "@typescript-eslint/explicit-module-boundary-types": "off",
-        },
-      },
-      dependencies: ["@typescript-eslint/eslint-plugin", "@typescript-eslint/parser", "eslint-config-prettier"],
-    },
-    {
-      name: "prettier",
-      category: "formatter",
-      dependencies: [],
-      configFileName: ".prettierrc",
-      configFileContent: {
-        arrowParens: "always",
-        printWidth: 120,
-        semi: false,
-        tabWidth: 2,
-      },
-    },
-    {
-      name: "instrumentajs",
-      category: "basic",
-      dependencies: [],
-    },
-  ],
-}
 
 function build(flags = "") {
   return spawnChildProcess(`tsc ${flags}`)
@@ -101,8 +37,9 @@ async function addTool(tool: Tool) {
 }
 
 export async function init(): Promise<any> {
-  await Promise.all([
-    writeJson("instrumenta.json", defaultConfigs),
-    Promise.all(defaultConfigs.tools.map(async (tool: Tool) => addTool(tool))),
-  ])
+  await Promise.all([addConfig(), Promise.all(defaultConfigs.tools.map(async (tool: Tool) => addTool(tool)))])
+}
+
+export async function addConfig(): Promise<any> {
+  assertFile("instrumenta.json", JSON.stringify(defaultConfigs))
 }

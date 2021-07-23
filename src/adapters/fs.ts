@@ -1,5 +1,14 @@
+import defaultConfigs from "src/config"
 import fs from "fs"
 import path from "path"
+
+export const assertFile = async (file: string, defaultContent: string) => {
+  try {
+    await fs.promises.stat(file)
+  } catch (error) {
+    await fs.promises.writeFile(file, defaultContent)
+  }
+}
 
 export const assertDirectory = async (dir: string): Promise<boolean> => {
   try {
@@ -8,6 +17,12 @@ export const assertDirectory = async (dir: string): Promise<boolean> => {
     await fs.promises.mkdir(dir, { recursive: true })
   }
   return true
+}
+
+export const assertDefaultConfig = async () => {
+  const file = "instrumenta.json"
+  const defaultContent = JSON.stringify(defaultConfigs, null, 2)
+  assertFile(file, defaultContent)
 }
 
 export const writeJson = async (path: string, json: any) => {
