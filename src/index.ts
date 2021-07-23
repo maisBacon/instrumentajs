@@ -12,7 +12,7 @@ interface Tool {
 interface Config {
   linter: Tool
   formatter: Tool
-  typescript: Tool
+  superset: Tool
 }
 
 const defaultConfigs: Config = {
@@ -40,7 +40,7 @@ const defaultConfigs: Config = {
       tabWidth: 2,
     },
   },
-  typescript: {
+  superset: {
     name: "typescript",
     configFileName: "tsconfig.json",
     configFileContent: {
@@ -71,14 +71,14 @@ function buildDev() {
 }
 
 function run() {
-  return spawnChildProcess(`node ${path.join(defaultConfigs.typescript.configFileContent.outDir, "index.js")}`)
+  return spawnChildProcess(`node ${path.join(defaultConfigs.superset.configFileContent.outDir, "index.js")}`)
 }
 
 export function runDev(): void {
   buildDev()
 
   let node = run()
-  fs.watch(defaultConfigs.typescript.configFileContent.outDir, { recursive: true }, () => {
+  fs.watch(defaultConfigs.superset.configFileContent.outDir, { recursive: true }, () => {
     node.kill()
     node = run()
   })
