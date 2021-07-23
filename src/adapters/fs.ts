@@ -1,6 +1,5 @@
 import fs from "fs"
 import path from "path"
-import { Tool } from "types"
 
 export const assertDirectory = async (dir: string): Promise<boolean> => {
   try {

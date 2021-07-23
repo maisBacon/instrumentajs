@@ -2,25 +2,30 @@ import { promisifyChildProcess, spawnChildProcess } from "adapters/child_process
 import { assertDirectory, writeJson, writeToolConfig, writeToolIndex } from "adapters/fs"
 import fs from "fs"
 import path from "path"
-import { Config, Tool } from "types"
-
+const inputDirectory = "./src"
+const outputDirectory = "./dist"
+const toolsDirectory = "./tools"
 const defaultConfigs: Config = {
+  inputDirectory,
+  outputDirectory,
   tools: [
     {
       name: "typescript",
       category: "superset",
+      dependencies: [],
       configFileName: "tsconfig.json",
       configFileContent: {
         compilerOptions: {
+          resolveJsonModule: true,
           target: "ES2020",
           module: "commonjs",
           allowJs: true,
           checkJs: true,
           jsx: "preserve",
-          outDir: "./dist",
-          rootDirs: ["./src", "./tools"],
+          outDir: outputDirectory,
+          rootDirs: [inputDirectory, toolsDirectory],
           strict: false,
-          baseUrl: "./src",
+          baseUrl: inputDirectory,
           esModuleInterop: true,
           skipLibCheck: true,
           forceConsistentCasingInFileNames: true,
@@ -46,6 +51,7 @@ const defaultConfigs: Config = {
     {
       name: "prettier",
       category: "formatter",
+      dependencies: [],
       configFileName: ".prettierrc",
       configFileContent: {
         arrowParens: "always",
@@ -53,6 +59,11 @@ const defaultConfigs: Config = {
         semi: false,
         tabWidth: 2,
       },
+    },
+    {
+      name: "instrumentajs",
+      category: "basic",
+      dependencies: [],
     },
   ],
 }
@@ -66,7 +77,7 @@ function buildDev() {
 }
 
 function run() {
-  return spawnChildProcess(`node dist/index.js`)
+  return spawnChildProcess(`node dist/src/index.js`)
 }
 
 export function runDev(): void {
@@ -80,13 +91,13 @@ export function runDev(): void {
 }
 
 async function addTool(tool: Tool) {
-  await assertDirectory(path.join("tools", tool.category, tool.name)),
-    await Promise.all([
-      promisifyChildProcess(spawnChildProcess(`npm i -D ${tool.name}`)),
-      writeToolConfig(tool),
-      writeToolIndex(tool),
-      writeJson(tool.configFileName, tool.configFileContent),
-    ])
+  const packages = [tool.name, ...tool.dependencies].filter((x) => x)
+  await assertDirectory(path.join("tools", tool.category, tool.name))
+  const tasks = [promisifyChildProcess(spawnChildProcess(`npm i -D ${packages.join(" ")}`)), writeToolIndex(tool)]
+  if (tool.configFileName && tool.configFileContent) {
+    tasks.push(writeToolConfig(tool), writeJson(tool.configFileName, tool.configFileContent))
+  }
+  await Promise.all(tasks)
 }
 
 export async function init(): Promise<any> {
