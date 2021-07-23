@@ -1,65 +1,60 @@
 import { promisifyChildProcess, spawnChildProcess } from "adapters/child_process"
+import { assertDirectory, writeJson, writeToolConfig, writeToolIndex } from "adapters/fs"
 import fs from "fs"
 import path from "path"
-
-interface Tool {
-  name: string
-  configFileName: string
-  configFileContent: any
-  dependencies?: string[]
-}
-
-interface Config {
-  linter: Tool
-  formatter: Tool
-  superset: Tool
-}
+import { Config, Tool } from "types"
 
 const defaultConfigs: Config = {
-  linter: {
-    name: "eslint",
-    configFileName: ".eslintrc",
-    configFileContent: {
-      root: true,
-      parser: "@typescript-eslint/parser",
-      extends: ["eslint:recommended", "plugin:@typescript-eslint/recommended", "prettier"],
-      plugins: ["@typescript-eslint"],
-      rules: {
-        "@typescript-eslint/no-explicit-any": "off",
+  tools: [
+    {
+      name: "typescript",
+      category: "superset",
+      configFileName: "tsconfig.json",
+      configFileContent: {
+        compilerOptions: {
+          target: "ES2020",
+          module: "commonjs",
+          allowJs: true,
+          checkJs: true,
+          jsx: "preserve",
+          outDir: "./dist",
+          rootDirs: ["./src", "./tools"],
+          strict: false,
+          baseUrl: "./src",
+          esModuleInterop: true,
+          skipLibCheck: true,
+          forceConsistentCasingInFileNames: true,
+        },
       },
     },
-    dependencies: ["@typescript-eslint/eslint-plugin", "@typescript-eslint/parser", "eslint-config-prettier"],
-  },
-  formatter: {
-    name: "prettier",
-    configFileName: ".prettierrc",
-    configFileContent: {
-      arrowParens: "always",
-      printWidth: 120,
-      semi: false,
-      tabWidth: 2,
+    {
+      name: "eslint",
+      category: "linter",
+      configFileName: ".eslintrc",
+      configFileContent: {
+        root: true,
+        parser: "@typescript-eslint/parser",
+        extends: ["eslint:recommended", "plugin:@typescript-eslint/recommended", "prettier"],
+        plugins: ["@typescript-eslint"],
+        rules: {
+          "@typescript-eslint/no-explicit-any": "off",
+          "@typescript-eslint/explicit-module-boundary-types": "off",
+        },
+      },
+      dependencies: ["@typescript-eslint/eslint-plugin", "@typescript-eslint/parser", "eslint-config-prettier"],
     },
-  },
-  superset: {
-    name: "typescript",
-    configFileName: "tsconfig.json",
-    configFileContent: {
-      compilerOptions: {
-        target: "ES2020",
-        module: "commonjs",
-        allowJs: true,
-        checkJs: true,
-        jsx: "preserve",
-        outDir: "./dist",
-        rootDir: "./src",
-        strict: false,
-        baseUrl: "./src",
-        esModuleInterop: true,
-        skipLibCheck: true,
-        forceConsistentCasingInFileNames: true,
+    {
+      name: "prettier",
+      category: "formatter",
+      configFileName: ".prettierrc",
+      configFileContent: {
+        arrowParens: "always",
+        printWidth: 120,
+        semi: false,
+        tabWidth: 2,
       },
     },
-  },
+  ],
 }
 
 function build(flags = "") {
@@ -71,26 +66,32 @@ function buildDev() {
 }
 
 function run() {
-  return spawnChildProcess(`node ${path.join(defaultConfigs.superset.configFileContent.outDir, "index.js")}`)
+  return spawnChildProcess(`node dist/index.js`)
 }
 
 export function runDev(): void {
   buildDev()
 
   let node = run()
-  fs.watch(defaultConfigs.superset.configFileContent.outDir, { recursive: true }, () => {
+  fs.watch("dist", { recursive: true }, () => {
     node.kill()
     node = run()
   })
 }
 
 async function addTool(tool: Tool) {
-  await Promise.all([
-    fs.promises.writeFile(tool.configFileName, JSON.stringify(tool.configFileContent, null, 2)),
-    promisifyChildProcess(spawnChildProcess(`npm i -D ${tool.name}`)),
-  ])
+  await assertDirectory(path.join("tools", tool.category, tool.name)),
+    await Promise.all([
+      promisifyChildProcess(spawnChildProcess(`npm i -D ${tool.name}`)),
+      writeToolConfig(tool),
+      writeToolIndex(tool),
+      writeJson(tool.configFileName, tool.configFileContent),
+    ])
 }
 
 export async function init(): Promise<any> {
-  await Promise.all(Object.values(defaultConfigs).map(async (tool: Tool) => addTool(tool)))
+  await Promise.all([
+    writeJson("instrumenta.json", defaultConfigs),
+    Promise.all(defaultConfigs.tools.map(async (tool: Tool) => addTool(tool))),
+  ])
 }
