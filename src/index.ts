@@ -1,17 +1,32 @@
 import fs from "fs"
 import path from "path"
-import { spawnChildProcess } from "utils"
+import { ChildProcess, spawn } from "child_process"
+
+const spawnChildProcess = (command: string): ChildProcess => {
+  const child = spawn(command, { shell: true })
+  child.stdout.pipe(process.stdout)
+  child.stderr.pipe(process.stderr)
+  return child
+}
+
+const promisifyChildProcess = (child: ChildProcess) => {
+  return new Promise((resolve, reject) => {
+    child.on("close", resolve)
+    child.on("error", reject)
+  })
+}
 
 interface Tool {
   name: string
   configFileName: string
   configFileContent: any
+  dependencies?: string[]
 }
 
 interface Config {
   linter: Tool
   formatter: Tool
-  typescript: any
+  typescript: Tool
 }
 
 const defaultConfigs: Config = {
@@ -27,10 +42,11 @@ const defaultConfigs: Config = {
         "@typescript-eslint/no-explicit-any": "off",
       },
     },
+    dependencies: ["@typescript-eslint/eslint-plugin", "@typescript-eslint/parser", "eslint-config-prettier"],
   },
   formatter: {
     name: "prettier",
-    configFileName: ".pretterrc",
+    configFileName: ".prettierrc",
     configFileContent: {
       arrowParens: "always",
       printWidth: 120,
@@ -39,28 +55,25 @@ const defaultConfigs: Config = {
     },
   },
   typescript: {
-    target: "ES2020",
-    module: "commonjs",
-    allowJs: true,
-    checkJs: true,
-    jsx: "preserve",
-    outDir: "./dist",
-    rootDir: "./src",
-    strict: false,
-    baseUrl: "./src",
-    esModuleInterop: true,
-    skipLibCheck: true,
-    forceConsistentCasingInFileNames: true,
+    name: "typescript",
+    configFileName: "tsconfig.json",
+    configFileContent: {
+      compilerOptions: {
+        target: "ES2020",
+        module: "commonjs",
+        allowJs: true,
+        checkJs: true,
+        jsx: "preserve",
+        outDir: "./dist",
+        rootDir: "./src",
+        strict: false,
+        baseUrl: "./src",
+        esModuleInterop: true,
+        skipLibCheck: true,
+        forceConsistentCasingInFileNames: true,
+      },
+    },
   },
-}
-
-const workflows = {
-  build: true,
-  run: true,
-}
-
-const envs = {
-  dev: true,
 }
 
 function build(flags = "") {
@@ -72,25 +85,26 @@ function buildDev() {
 }
 
 function run() {
-  return spawnChildProcess(`node ${path.join(defaultConfigs.typescript.outDir, "index.js")}`)
+  return spawnChildProcess(`node ${path.join(defaultConfigs.typescript.configFileContent.outDir, "index.js")}`)
 }
 
-async function runDev() {
-  const tsc = spawnChildProcess("tsc -w")
+export function runDev(): void {
+  buildDev()
 
-  tsc.on("close", () => {
-    let node = run()
-    fs.watch(defaultConfigs.typescript.outDir, { recursive: true }, () => {
-      node.kill()
-      node = run()
-    })
+  let node = run()
+  fs.watch(defaultConfigs.typescript.configFileContent.outDir, { recursive: true }, () => {
+    node.kill()
+    node = run()
   })
 }
 
 async function addTool(tool: Tool) {
-  await fs.promises.writeFile(tool.configFileName, JSON.stringify(tool.configFileContent, null, 2))
+  await Promise.all([
+    fs.promises.writeFile(tool.configFileName, JSON.stringify(tool.configFileContent, null, 2)),
+    promisifyChildProcess(spawnChildProcess(`npm i -D ${tool.name}`)),
+  ])
 }
 
-async function init() {
+export async function init(): Promise<any> {
   await Promise.all(Object.values(defaultConfigs).map(async (tool: Tool) => addTool(tool)))
 }
