@@ -1,20 +1,6 @@
+import { promisifyChildProcess, spawnChildProcess } from "adapters/child_process"
 import fs from "fs"
 import path from "path"
-import { ChildProcess, spawn } from "child_process"
-
-const spawnChildProcess = (command: string): ChildProcess => {
-  const child = spawn(command, { shell: true })
-  child.stdout.pipe(process.stdout)
-  child.stderr.pipe(process.stderr)
-  return child
-}
-
-const promisifyChildProcess = (child: ChildProcess) => {
-  return new Promise((resolve, reject) => {
-    child.on("close", resolve)
-    child.on("error", reject)
-  })
-}
 
 interface Tool {
   name: string
