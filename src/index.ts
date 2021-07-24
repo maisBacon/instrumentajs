@@ -11,8 +11,8 @@ async function addTool(config: Config, tool: Tool) {
   await assertDirectory(toolDirectory)
   await promisifyChildProcess(
     spawnChildProcess(`${config.packageManager.name} ${config.packageManager.addCommand} ${packages}`)
-  ),
-    await writeToolIndex(tool)
+  )
+  await writeToolIndex(tool)
 
   if (tool.configFileName && tool.configFileContent) {
     if (tool.configFileContent === "string") {
