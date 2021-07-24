@@ -3,7 +3,7 @@
   "version": "0.0.11",
   "description": "",
   "main": "dist/index.js",
-  "bin": "node scripts/run-cli.js",
+  "bin": "scripts/run-cli.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepare": "husky install"
