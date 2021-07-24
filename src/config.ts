@@ -5,6 +5,11 @@ const defaultConfigs: Config = {
   inputDirectory,
   outputDirectory,
   toolsDirectory,
+  packageManager: {
+    name: "pnpm",
+    addCommand: "add -D",
+    removeCommand: "remove -D",
+  },
   tools: [
     {
       name: "typescript",
@@ -66,3 +71,4 @@ const defaultConfigs: Config = {
 }
 
 export default defaultConfigs
+export const configFileName = "instrumenta.json"

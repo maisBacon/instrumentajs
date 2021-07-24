@@ -9,7 +9,7 @@ specifiers:
   eslint: ^7.31.0
   eslint-config-prettier: ^8.3.0
   husky: ^7.0.1
-  instrumentajs: ^0.0.1
+  instrumentajs: ^0.0.3
   prettier: ^2.3.2
   typescript: ^4.3.5
 
@@ -24,7 +24,7 @@ devDependencies:
   eslint: 7.31.0
   eslint-config-prettier: 8.3.0_eslint@7.31.0
   husky: 7.0.1
-  instrumentajs: 0.0.1
+  instrumentajs: 0.0.3
   prettier: 2.3.2
   typescript: 4.3.5
 
@@ -717,8 +717,8 @@ packages:
     resolution: {integrity: sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ==}
     dev: true
 
-  /instrumentajs/0.0.1:
-    resolution: {integrity: sha512-70JHlVCdh7SIRlBt4DIWqahWg8z6L61ZOsBPsuLZDgpQ/d60CMMxzHNOcs9PD5G6JpgCV6lcQwkZPVwlnKQRTA==}
+  /instrumentajs/0.0.3:
+    resolution: {integrity: sha512-aHHp8lduVHQR0IUN9tfIvVBKIZWC2WxzDa+DP+cOCYGUiTJM5yFzzrZMSLXNkNI6BYiHFHnjn0jEVvZFyNvCpA==}
     hasBin: true
     dependencies:
       commander: 8.0.0
