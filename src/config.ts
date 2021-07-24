@@ -58,15 +58,6 @@ const defaultConfigs: Config = {
       },
     },
     {
-      name: "husky",
-      category: "basic",
-      dependencies: [],
-      configFileName: ".huskyrc",
-      configFileContent: {
-        "pre-push": "npm version patch && npm publish",
-      },
-    },
-    {
       name: "instrumentajs",
       category: "basic",
       dependencies: [],

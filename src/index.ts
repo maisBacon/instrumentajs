@@ -1,5 +1,5 @@
 import { promisifyChildProcess, spawnChildProcess } from "src/adapters/child_process"
-import { assertDirectory, assertFile, writeJson, writeToolIndex } from "src/adapters/fs"
+import { assertDirectory, assertFile, writeToolIndex } from "src/adapters/fs"
 import defaultConfigs from "src/config"
 import fs from "fs"
 import path from "path"
@@ -29,7 +29,7 @@ export function runDev(): void {
 async function addTool(tool: Tool) {
   const packages = [tool.name, ...tool.dependencies].filter((x) => x)
   await assertDirectory(path.join("tools", tool.category, tool.name))
-  const tasks = [promisifyChildProcess(spawnChildProcess(`npm i -D ${packages.join(" ")}`)), writeToolIndex(tool)]
+  const tasks = [promisifyChildProcess(spawnChildProcess(`pnpm i -D ${packages.join(" ")}`)), writeToolIndex(tool)]
   if (tool.configFileName && tool.configFileContent) {
     const configContent =
       typeof tool.configFileContent === "string"
@@ -43,18 +43,44 @@ async function addTool(tool: Tool) {
   await Promise.all(tasks)
 }
 
-export async function init(): Promise<any> {
-  await Promise.all([addConfig(), Promise.all(defaultConfigs.tools.map(async (tool: Tool) => addTool(tool)))])
+async function uninstallTool(tool: Tool) {
+  const packages = [tool.name, ...tool.dependencies].filter((x) => x)
+  await promisifyChildProcess(spawnChildProcess(`pnpm un ${packages.join(" ")}`))
 }
 
-export async function addConfig(): Promise<any> {
+async function assertGitInit() {
+  try {
+    await fs.promises.stat(".git")
+  } catch (error) {
+    await promisifyChildProcess(spawnChildProcess("git init"))
+  }
+}
+
+async function assertGitIgnore() {
+  const gitIgnoreContent = ["node_modules", "dist"].join("\n")
+  await assertFile(".gitignore", gitIgnoreContent)
+}
+
+async function assertGit() {
+  await Promise.all([assertGitInit(), assertGitIgnore()])
+}
+
+export async function init(): Promise<any> {
+  await assertConfig()
+  await assertGit()
+  for (const tool of defaultConfigs.tools) {
+    await addTool(tool)
+  }
+}
+
+export async function assertConfig(): Promise<any> {
   await assertFile("instrumenta.json", JSON.stringify(defaultConfigs))
 }
 
 export async function clean(): Promise<any> {
-  await addConfig()
-  const configBuffer = await fs.promises.readFile("instrumenta.json")
-  const toolsDirectory = await JSON.parse(configBuffer.toString()).toolsDirectory
-  await fs.promises.rm(toolsDirectory, { recursive: true })
-  await fs.promises.rm("instrumenta.json")
+  await fs.promises.rm(defaultConfigs.toolsDirectory, { recursive: true, force: true })
+  await fs.promises.rm("instrumenta.json", { force: true })
+  for (const tool of defaultConfigs.tools) {
+    await uninstallTool(tool)
+  }
 }
