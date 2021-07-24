@@ -8,16 +8,13 @@ const fs_1 = __importDefault(require("fs"));
 const child_process_1 = require("./child_process");
 const fs_2 = require("./fs");
 async function assertGitInit() {
-    try {
-        await fs_1.default.promises.stat(".git");
-    }
-    catch (error) {
+    if (!fs_1.default.existsSync(".git")) {
         await child_process_1.promisifyChildProcess(child_process_1.spawnChildProcess("git init"));
     }
 }
 exports.assertGitInit = assertGitInit;
 async function assertGitIgnore() {
-    const gitIgnoreContent = ["node_modules", "dist"].join("\n");
+    const gitIgnoreContent = "node_modules";
     await fs_2.assertFile(".gitignore", gitIgnoreContent);
 }
 exports.assertGitIgnore = assertGitIgnore;

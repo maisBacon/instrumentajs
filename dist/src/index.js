@@ -33,8 +33,8 @@ async function addTool(config, tool) {
     const packages = [tool.name, ...tool.dependencies].filter((x) => x).join(" ");
     const toolDirectory = path_1.default.join(config.toolsDirectory, tool.category, tool.name);
     await fs_1.assertDirectory(toolDirectory);
-    await child_process_1.promisifyChildProcess(child_process_1.spawnChildProcess(`${config.packageManager.name} ${config.packageManager.addCommand} ${packages}`)),
-        await fs_1.writeToolIndex(tool);
+    await child_process_1.promisifyChildProcess(child_process_1.spawnChildProcess(`${config.packageManager.name} ${config.packageManager.addCommand} ${packages}`));
+    await fs_1.writeToolIndex(tool);
     if (tool.configFileName && tool.configFileContent) {
         if (tool.configFileContent === "string") {
             await fs_1.assertFile(tool.configFileName, tool.configFileContent);
@@ -49,6 +49,10 @@ async function uninstallTool(config, tool) {
     await child_process_1.promisifyChildProcess(child_process_1.spawnChildProcess(`${config.packageManager.name} ${config.packageManager.removeCommand} ${packages}`));
 }
 async function init() {
+    if (fs_2.default.existsSync(config_1.configFileName)) {
+        console.log(`Espaço de trabalho já foi iniciado`);
+        return;
+    }
     await fs_1.writeJson(config_1.configFileName, config_1.default);
     const configBuffer = await fs_2.default.promises.readFile(config_1.configFileName);
     const config = JSON.parse(configBuffer.toString());
@@ -60,7 +64,7 @@ async function init() {
 exports.init = init;
 async function clean() {
     if (!fs_2.default.existsSync(config_1.configFileName)) {
-        console.log(`No ${config_1.configFileName} found`);
+        console.log(`Espaço de trabalho não foi iniciado`);
         return;
     }
     const configBuffer = await fs_2.default.promises.readFile(config_1.configFileName);
