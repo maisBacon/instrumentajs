@@ -48,5 +48,13 @@ export async function init(): Promise<any> {
 }
 
 export async function addConfig(): Promise<any> {
-  assertFile("instrumenta.json", JSON.stringify(defaultConfigs))
+  await assertFile("instrumenta.json", JSON.stringify(defaultConfigs))
+}
+
+export async function clean(): Promise<any> {
+  await addConfig()
+  const configBuffer = await fs.promises.readFile("instrumenta.json")
+  const toolsDirectory = await JSON.parse(configBuffer.toString()).toolsDirectory
+  await fs.promises.rm(toolsDirectory, { recursive: true })
+  await fs.promises.rm("instrumenta.json")
 }

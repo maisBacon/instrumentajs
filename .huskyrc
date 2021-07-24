@@ -1,5 +1,3 @@
 {
-  "hooks": {
-    "pre-push": "npm version patch && npm publish"
-  }
+  "pre-push": "npm version patch && npm publish"
 }

@@ -9,5 +9,6 @@ declare interface Tool {
 declare interface Config {
   inputDirectory: string
   outputDirectory: string
+  toolsDirectory: string
   tools: Tool[]
 }

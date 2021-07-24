@@ -4,6 +4,7 @@ const toolsDirectory = "./tools"
 const defaultConfigs: Config = {
   inputDirectory,
   outputDirectory,
+  toolsDirectory,
   tools: [
     {
       name: "typescript",
@@ -54,6 +55,15 @@ const defaultConfigs: Config = {
         printWidth: 120,
         semi: false,
         tabWidth: 2,
+      },
+    },
+    {
+      name: "husky",
+      category: "basic",
+      dependencies: [],
+      configFileName: ".huskyrc",
+      configFileContent: {
+        "pre-push": "npm version patch && npm publish",
       },
     },
     {
