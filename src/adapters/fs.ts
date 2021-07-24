@@ -29,10 +29,6 @@ export const writeJson = async (path: string, json: any) => {
   return fs.promises.writeFile(path, JSON.stringify(json, null, 2))
 }
 
-export const writeToolConfig = async (tool: Tool): Promise<void> => {
-  return writeJson(path.join("tools", tool.category, tool.name, "config.json"), tool.configFileContent)
-}
-
 export const writeToolIndex = async (tool: Tool) => {
   const line1 = `export const name = "${tool.name}"`
   const line2 = `export const configFileName = "${tool.configFileName}"`

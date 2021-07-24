@@ -1,5 +1,5 @@
 import { promisifyChildProcess, spawnChildProcess } from "src/adapters/child_process"
-import { assertDirectory, assertFile, writeJson, writeToolConfig, writeToolIndex } from "src/adapters/fs"
+import { assertDirectory, assertFile, writeJson, writeToolIndex } from "src/adapters/fs"
 import defaultConfigs from "src/config"
 import fs from "fs"
 import path from "path"
@@ -31,7 +31,14 @@ async function addTool(tool: Tool) {
   await assertDirectory(path.join("tools", tool.category, tool.name))
   const tasks = [promisifyChildProcess(spawnChildProcess(`npm i -D ${packages.join(" ")}`)), writeToolIndex(tool)]
   if (tool.configFileName && tool.configFileContent) {
-    tasks.push(writeToolConfig(tool), writeJson(tool.configFileName, tool.configFileContent))
+    const configContent =
+      typeof tool.configFileContent === "string"
+        ? tool.configFileContent
+        : JSON.stringify(tool.configFileContent, null, 2)
+    tasks.push(
+      fs.promises.writeFile(path.join("tools", tool.category, tool.name, tool.configFileName), configContent),
+      fs.promises.writeFile(tool.configFileName, configContent)
+    )
   }
   await Promise.all(tasks)
 }
