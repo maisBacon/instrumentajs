@@ -1,0 +1,13 @@
+#!/usr/bin/env node
+const { spawn } = require("child_process")
+const path = require("path")
+const nodePath = path.join(__dirname, "..", "dist")
+const child = spawn(`node ${path.join(nodePath, "src", "cli.js")} ${process.argv.slice(2)}`, {
+  shell: true,
+  env: {
+    NODE_PATH: nodePath,
+  },
+})
+
+child.stdout.pipe(process.stdout)
+child.stderr.pipe(process.stderr)
