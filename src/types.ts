@@ -1,10 +1,10 @@
-declare interface PackageManager {
+export interface PackageManager {
   name: string
   addCommand: string
   removeCommand: string
 }
 
-declare interface Tool {
+export interface Tool {
   name: string
   category: string
   configFileName?: string
@@ -12,7 +12,7 @@ declare interface Tool {
   dependencies: string[]
 }
 
-declare interface Config {
+export interface Config {
   inputDirectory: string
   outputDirectory: string
   toolsDirectory: string

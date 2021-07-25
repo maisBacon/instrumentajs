@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.promisifyChildProcess = exports.spawnChildProcess = void 0;
 const child_process_1 = require("child_process");
 const spawnChildProcess = (command) => {
-    const child = child_process_1.spawn(command, { shell: true });
+    const child = child_process_1.exec(command);
     child.stdout.pipe(process.stdout);
     child.stderr.pipe(process.stderr);
     return child;

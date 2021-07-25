@@ -2,13 +2,15 @@
   "compilerOptions": {
     "resolveJsonModule": true,
     "target": "ES2020",
-    "module": "CommonJS",
-    "moduleResolution": "node",
+    "module": "commonjs",
     "allowJs": true,
     "checkJs": true,
     "jsx": "preserve",
     "outDir": "./dist",
-    "rootDirs": ["./src", "./tools"],
+    "rootDirs": [
+      "./src",
+      "./tools"
+    ],
     "strict": false,
     "baseUrl": ".",
     "esModuleInterop": true,

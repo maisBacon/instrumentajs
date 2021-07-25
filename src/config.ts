@@ -1,3 +1,5 @@
+import { Config } from "./types"
+
 const inputDirectory = "./src"
 const outputDirectory = "./dist"
 const toolsDirectory = "./tools"

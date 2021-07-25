@@ -1,9 +1,7 @@
 #!/usr/bin/env node
-const { spawn } = require("child_process")
-const path = require("path")
-const nodePath = path.join(__dirname, "..", "dist")
-const child = spawn(`node ${path.join(nodePath, "src", "cli.js")} ${process.argv.slice(2)}`, {
-  shell: true,
+const { exec } = require("child_process")
+const nodePath = "."
+const child = exec(`npm run cli ${process.argv.slice(2)}`, {
   env: {
     NODE_PATH: nodePath,
   },
