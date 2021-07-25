@@ -3,10 +3,13 @@
     "version": "0.0.8",
     "description": "",
     "main": "dist/index.js",
-    "bin": "dist/cli.js",
+    "bin": {
+        "instrumenta": "scripts/run-cli.js"
+    },
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "prepare": "husky install"
+        "prepare": "husky install",
+        "cli": "tsc && cross-env NODE_PATH=./dist node dist/src/cli.js"
     },
     "repository": {
         "type": "git",
@@ -21,7 +24,7 @@
     "homepage": "https://github.com/dodiego/instrumentajs#readme",
     "devDependencies": {
         "@types/inquirer": "^7.3.3",
-        "@types/node": "^16.4.0",
+        "@types/node": "^16.4.2",
         "@typescript-eslint/eslint-plugin": "^4.28.4",
         "@typescript-eslint/parser": "^4.28.4",
         "eslint": "^7.31.0",
@@ -32,6 +35,7 @@
         "typescript": "^4.3.5"
     },
     "dependencies": {
-        "commander": "^8.0.0"
+        "commander": "^8.0.0",
+        "cross-env": "^7.0.3"
     }
 }

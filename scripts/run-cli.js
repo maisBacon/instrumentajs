@@ -1,12 +1,9 @@
 #!/usr/bin/env node
 const { spawn } = require("child_process")
 const path = require("path")
-const child = spawn(`node dist/src/cli.js ${process.argv.slice(2)}`, {
-  env: {
-    NODE_PATH: path.join(__dirname, "./dist"),
-  },
+const child = spawn("tsc && npx cross-env NODE_PATH=./dist node dist/src/cli.js", {
+  cwd: path.join(__dirname, ".."),
   shell: true,
 })
-
 child.stdout.pipe(process.stdout)
 child.stderr.pipe(process.stderr)

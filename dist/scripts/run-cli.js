@@ -1,9 +1,9 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const child_process_1 = require("child_process");
-child_process_1.spawn(`node dist/src/cli.js`, {
-    env: {
-        NODE_PATH: "./dist",
-    },
+#!/usr/bin/env node
+const { spawn } = require("child_process");
+const path = require("path");
+const child = spawn("tsc && npx cross-env NODE_PATH=./dist node dist/src/cli.js", {
+    cwd: path.join(__dirname, ".."),
     shell: true,
 });
+child.stdout.pipe(process.stdout);
+child.stderr.pipe(process.stderr);
