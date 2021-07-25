@@ -1,41 +1,41 @@
 {
-  "name": "instrumentajs",
-  "version": "0.0.13",
-  "description": "",
-  "main": "dist/index.js",
-  "bin": {
-    "instrumenta": "bin/instrumenta"
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "prepare": "husky install",
-    "cli": "tsc && cross-env NODE_PATH=./dist node dist/src/cli.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/dodiego/instrumentajs.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "MPL-2.0",
-  "bugs": {
-    "url": "https://github.com/dodiego/instrumentajs/issues"
-  },
-  "homepage": "https://github.com/dodiego/instrumentajs#readme",
-  "devDependencies": {
-    "@types/inquirer": "^7.3.3",
-    "@types/node": "^16.4.2",
-    "@typescript-eslint/eslint-plugin": "^4.28.4",
-    "@typescript-eslint/parser": "^4.28.4",
-    "eslint": "^7.31.0",
-    "eslint-config-prettier": "^8.3.0",
-    "husky": "^7.0.1",
-    "instrumentajs": "^0.0.3",
-    "prettier": "^2.3.2",
-    "typescript": "^4.3.5"
-  },
-  "dependencies": {
-    "commander": "^8.0.0",
-    "cross-env": "^7.0.3"
-  }
+    "name": "instrumentajs",
+    "version": "0.0.14",
+    "description": "",
+    "main": "dist/index.js",
+    "bin": {
+        "instrumenta": "bin/instrumenta"
+    },
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "prepare": "husky install",
+        "cli": "tsc && node bin/instrumenta"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/dodiego/instrumentajs.git"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "MPL-2.0",
+    "bugs": {
+        "url": "https://github.com/dodiego/instrumentajs/issues"
+    },
+    "homepage": "https://github.com/dodiego/instrumentajs#readme",
+    "devDependencies": {
+        "@types/inquirer": "^7.3.3",
+        "@types/node": "^16.4.2",
+        "@typescript-eslint/eslint-plugin": "^4.28.4",
+        "@typescript-eslint/parser": "^4.28.4",
+        "eslint": "^7.31.0",
+        "eslint-config-prettier": "^8.3.0",
+        "husky": "^7.0.1",
+        "instrumentajs": "^0.0.3",
+        "prettier": "^2.3.2",
+        "typescript": "^4.3.5"
+    },
+    "dependencies": {
+        "commander": "^8.0.0",
+        "cross-env": "^7.0.3"
+    }
 }

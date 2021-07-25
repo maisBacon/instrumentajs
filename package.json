@@ -4,12 +4,12 @@
   "description": "",
   "main": "dist/index.js",
   "bin": {
-    "instrumenta": "scripts/run-cli.js"
+    "instrumenta": "bin/instrumenta"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepare": "husky install",
-    "cli": "tsc && cross-env NODE_PATH=./dist node dist/src/cli.js"
+    "cli": "tsc && node bin/instrumenta"
   },
   "repository": {
     "type": "git",
