@@ -3,9 +3,7 @@
   "version": "0.0.17",
   "description": "",
   "main": "dist/index.js",
-  "bin": {
-    "instrumenta": "bin/instrumenta"
-  },
+  "bin": "bin/instrumenta.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepare": "husky install",
