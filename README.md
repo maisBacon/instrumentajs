@@ -44,7 +44,10 @@ npx instrumenta help
 - Adicionar mais comandos
     - `dev` Executar ambiente de desenvolvimento
     - `add <plugin>` Integrar plugin ao ambiente de desenvolvimento
-
+- Adicionar jest
+- Adicionar ambiente para debugar local (compilar, rodar o node e fazer attach de debugger com docker e etc...)
+- Trocar comando `clean` para `clear`
+- Adicionar comando `drop` para limpar apagar somente o tools
   
 ## Rodando localmente
 
