@@ -4,7 +4,6 @@ import defaultConfigs, { configFileName } from "src/config"
 import fs from "fs"
 import path from "path"
 import { assertGitIgnore, assertGitInit } from "./adapters/git"
-import { Config, Tool } from "./types"
 
 async function addTool(config: Config, tool: Tool) {
   const packages = [tool.name, ...tool.dependencies].filter((x) => x).join(" ")

@@ -1,6 +1,5 @@
 import fs from "fs"
 import path from "path"
-import { Tool } from "src/types"
 
 export const assertFile = async (file: string, defaultContent: string) => {
   try {
